@@ -9,17 +9,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export function MultiForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
+export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([])
   const interestOptions: Option[] = [
-    { value: "tech", label: "Technology" },
-    { value: "design", label: "Design" },
-    { value: "marketing", label: "Marketing" },
-    { value: "business", label: "Business" },
-    { value: "education", label: "Education" },
-    { value: "health", label: "Health & Wellness" },
-    { value: "finance", label: "Finance" },
-    { value: "entertainment", label: "Entertainment" },
+    { value: "2021", label: "2021" },
+    { value: "2022", label: "2022" },
+    { value: "2023", label: "2023" },
+    { value: "2024", label: "2024" },
+    { value: "2025", label: "2025" }
   ]
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
