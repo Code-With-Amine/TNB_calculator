@@ -5,7 +5,6 @@ import {
   MenubarItem,
   MenubarMenu,
   MenubarSeparator,
-  MenubarShortcut,
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { ModeToggle } from "./ui/toggole-mode";
@@ -13,7 +12,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function Nav() {
   return (
-    <div className="flex flex-wrap gap-6 items-center">
+    <div className="flex flex-wrap gap-6 items-center justify-items-center"
+      style={{width: "80%", margin: "0 auto"}}
+    >
       <Avatar>
         <AvatarImage src="./TNBLogo.png" />
         <AvatarFallback>TNB Logo</AvatarFallback>

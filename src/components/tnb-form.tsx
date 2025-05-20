@@ -25,8 +25,9 @@ export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<
   const [etage, setEtage] = useState<string | null>(null)
   const [selectedTndYears, setSelectedTndYears] = useState<string[]>([])
   const [selectedDeclaredTnbYears, setSelectedDeclaredTnbYears] = useState<string[]>([])
+  const [totalYears, setTotalYears] = useState<number>(0)
   const [results, setResults] = useState<{ year: string; total: number }[]>([])
-
+  
   const tndYearsOptions: Option[] = [
     { value: "2021", label: "2021" },
     { value: "2022", label: "2022" },
@@ -38,17 +39,19 @@ export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const superficieValue = parseFloat(superficie)
+    setTotalYears(0)
     if (isNaN(superficieValue) || superficieValue <= 0) return
 
-    const tarif = 6
+    const tarif = etage == "villa" ? 6 : 10
     const principal = superficieValue * tarif
 
     const computed = selectedTndYears.map((year) => {
       const isDeclared = selectedDeclaredTnbYears.includes(year)
-      const total = calculateAmountForYear(parseInt(year), principal, isDeclared)
+      const total = calculateAmountForYear(parseInt(year), principal ,isDeclared)
       return { year, total }
     })
-
+    const total = computed.reduce((sum, item) => sum + item.total, 0)
+    setTotalYears(total)
     setResults(computed)
   }
 
@@ -128,6 +131,8 @@ export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<
                   </ul>
                 </div>
               )}
+            {totalYears > 0 &&  <p className="space-y-1 text-sm"><strong>Total: </strong>{totalYears}</p>}
+
             </div>
           </form>
         </CardContent>
