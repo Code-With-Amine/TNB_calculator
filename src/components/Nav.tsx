@@ -13,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 function Nav() {
   return (
     <div className="flex flex-wrap gap-6 items-center justify-items-center"
-      style={{width: "80%", margin: "0 auto"}}
+      style={{width: "50%", margin: "0 auto"}}
     >
       <Avatar>
         <AvatarImage src="./TNBLogo.png" />
