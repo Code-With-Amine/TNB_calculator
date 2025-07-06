@@ -236,7 +236,6 @@ export default function VerticalNavLanding() {
 
         {/* Footer */}
         <div className="text-center mt-16 text-slate-500">
-          <p>Hover over each navigation item to see the smooth transitions</p>
         </div>
       </div>
     </div>
