@@ -21,15 +21,13 @@ import {
 
 import { calculateAmountForYear } from "@/lib/tnb-utils" // utility function we'll define below
 
-export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
+export function TerranExo({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
   const [superficie, setSuperficie] = useState("")
   const [etage, setEtage] = useState<string | null>(null)
   const [selectedTndYears, setSelectedTndYears] = useState<string[]>([])
-  const [selectedDeclaredTnbYears, setSelectedDeclaredTnbYears] = useState<string[]>([])
   const [totalYears, setTotalYears] = useState<number>(0)
   const [results, setResults] = useState<{ year: string; total: number }[]>([])
-
-
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const superficieValue = parseFloat(superficie)
@@ -40,8 +38,7 @@ export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<
     const principal = superficieValue * tarif
 
     const computed = selectedTndYears.map((year) => {
-      const isDeclared = selectedDeclaredTnbYears.includes(year)
-      const total = calculateAmountForYear(parseInt(year), principal ,isDeclared)
+      const total = Math.max(principal * 0.15, 500);
       return { year, total }
     })
     const total = computed.reduce((sum, item) => sum + item.total, 0)
@@ -53,7 +50,7 @@ export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Terrains non bâtis (Non exonérés)</CardTitle>
+          <CardTitle className="text-xl">Terrain Exonérés</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -93,19 +90,6 @@ export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<
                   selected={selectedTndYears}
                   onChange={setSelectedTndYears}
                   placeholder="Sélectionnez les années"
-                />
-              </div>
-
-              <div className="grid gap-2">
-                <Label>Années déclarées</Label>
-                <MultiSelect
-                  options={tndYearsOptions().map((o) => ({
-                    value: o.value,
-                    label: `Je déclare ${o.label}`,
-                  }))}
-                  selected={selectedDeclaredTnbYears}
-                  onChange={setSelectedDeclaredTnbYears}
-                  placeholder="Sélectionnez les années déclarées"
                 />
               </div>
 

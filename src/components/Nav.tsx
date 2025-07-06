@@ -9,24 +9,26 @@ import {
 } from "@/components/ui/menubar";
 import { ModeToggle } from "./ui/toggole-mode";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
+
 
 function Nav() {
   return (
-    <div className="flex flex-wrap gap-6 items-center justify-items-center"
-      style={{width: "50%", margin: "0 auto"}}
-    >
+    <div className="flex flex-wrap gap-6 items-center justify-items-center nav-bar-container">
       <Avatar>
+        <Link href="/">
         <AvatarImage src="./TNBLogo.png" />
         <AvatarFallback>TNB Logo</AvatarFallback>
+        </Link>
       </Avatar>
 
-      <Menubar>
+      <Menubar className="flex flex-wrap gap-3">
         <MenubarMenu>
           <MenubarTrigger>Taxe sur les terrains non bâtis</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem>terrains Exo</MenubarItem>
+            <MenubarItem><Link href="/terrainExo">terrains Exo</Link></MenubarItem>
             <MenubarSeparator />
-            <MenubarItem>terrains non Exo</MenubarItem>
+            <MenubarItem><Link href="/terrainNonExo">terrains non Exo</Link></MenubarItem>
             <MenubarSeparator />
           </MenubarContent>
         </MenubarMenu>
