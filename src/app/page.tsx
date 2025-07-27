@@ -47,7 +47,7 @@ const navigationItems = [
     color: "from-blue-500/20 to-blue-600/20",
     hoverColor: "hover:from-blue-500/30 hover:to-blue-600/30",
     borderColor: "border-blue-200/50",
-    link: "/error",
+    link: "/Taxi",
   },
   {
     id: 3,
