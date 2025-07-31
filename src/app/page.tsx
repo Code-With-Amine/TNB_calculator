@@ -16,6 +16,17 @@ import {
 } from "lucide-react";
 
 const navigationItems = [
+    {
+    id: 10,
+    title: "Terrains non bâtis nouvelle version",
+    subtitle: "Soumis à la taxe",
+    description: "Essayez le nouveau calcul des taxes de TNB",
+    icon: Landmark,
+    color: "from-gray-500/20 to-gray-600/20",
+    hoverColor: "hover:from-gray-500/30 hover:to-gray-600/30",
+    borderColor: "border-gray-200/50",
+    link: "/newTNB",
+  },
   {
     id: 2,
     title: "Terrains non bâtis (Non exonérés)",
