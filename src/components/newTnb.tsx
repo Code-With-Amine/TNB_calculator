@@ -1,6 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { DataModal } from "@/components/DataModal";
+import {
+  Alert,
+  AlertTitle,
+  AlertDescription,
+} from "@/components/ui/alert";
 import {
   Card,
   CardContent,
@@ -64,6 +70,8 @@ interface resultObject {
 }
 
 export function EquipmentTaxCalculator() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [showLieuAlert, setShowLieuAlert] = useState(false);
   const [editLieu, setEditLieu] = useState<string>("");
   const [editId, setEditId] = useState<string | null>(null);
 
@@ -100,7 +108,7 @@ export function EquipmentTaxCalculator() {
 
   const computeResult = async () => {
     if (!lieu.trim()) {
-      alert("Le champ 'Lieu' ne peut pas être vide.");
+      setShowLieuAlert(true);
       return;
     }
 
@@ -177,11 +185,25 @@ export function EquipmentTaxCalculator() {
   );
 
   return (
-    <Tabs
-      value={lang}
-      onValueChange={(v) => setLang(v as "fr" | "ar")}
-      className="w-full max-w-5xl mx-auto"
-    >
+    <>
+      {showLieuAlert && (
+        <Alert className="mb-4">
+          <AlertTitle>Champ requis</AlertTitle>
+          <AlertDescription>
+            Le champ <strong>Lieu</strong> ne peut pas être vide.
+          </AlertDescription>
+          <div className="mt-2 flex justify-end">
+            <Button size="sm" variant="outline" onClick={() => setShowLieuAlert(false)}>
+              OK
+            </Button>
+          </div>
+        </Alert>
+      )}
+      <Tabs
+        value={lang}
+        onValueChange={(v) => setLang(v as "fr" | "ar")}
+        className="w-full max-w-5xl mx-auto"
+      >
       <TabsContent value="fr">
         <Card>
         <div className="grid gap-2 m-4">
@@ -226,97 +248,28 @@ export function EquipmentTaxCalculator() {
               </div>
             )}
 
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="w-full">
-                  Afficher toutes les données
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-5xl">
-                <DialogTitle>Toutes les données</DialogTitle>
-                <div className="flex gap-2 mb-4">
-                  <Input
-                    placeholder="Recherche par lieu"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                  <select
-                    className="border rounded px-2 py-1"
-                    value={filterCategory}
-                    onChange={(e) => setFilterCategory(e.target.value)}
-                  >
-                    <option value="">Toutes les catégories</option>
-                    <option value="Zone bien équipée (15 - 30 DH/m²)">Zone bien équipée</option>
-                    <option value="Zone moyennement équipée (5 - 15 DH/m²)">Zone moyennement équipée</option>
-                    <option value="Zone faiblement équipée (0.5 - 2 DH/m²)">Zone faiblement équipée</option>
-                  </select>
-                </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Lieu</TableHead>
-                      <TableHead>Zone</TableHead>
-                      <TableHead>Critères</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredData.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell>
-                          {editId === item.id ? (
-                            <Input
-                              value={editLieu}
-                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditLieu(e.target.value)}
-                              className="w-32"
-                            />
-                          ) : (
-                            item.Lieu
-                          )}
-                        </TableCell>
-                        <TableCell>{item.ZoneFr}</TableCell>
-                        <TableCell>
-                          {item.Evaluation.map((ev, i) => (
-                            <>
-                              {ev}
-                              {i < item.Evaluation.length - 1 && <br />}
-                            </>
-                          ))}
-                        </TableCell>
-                        <TableCell className="flex gap-2">
-                          {editId === item.id ? (
-                            <>
-                              <Button size="sm" variant="outline" onClick={handleUpdate}>
-                                Enregistrer
-                              </Button>
-                              <Button size="sm" variant="secondary" onClick={() => setEditId(null)}>
-                                Annuler
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              <Button size="sm" variant="outline" onClick={() => handleEdit(item)}>
-                                Modifier
-                              </Button>
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={() => handleDelete(item.id!)}
-                              >
-                                Supprimer
-                              </Button>
-                            </>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </DialogContent>
-            </Dialog>
+            <Button variant="outline" className="w-full" onClick={() => setModalOpen(true)}>
+              Afficher toutes les données
+            </Button>
+            <DataModal
+              open={modalOpen}
+              onOpenChange={setModalOpen}
+              search={search}
+              setSearch={setSearch}
+              filterCategory={filterCategory}
+              setFilterCategory={setFilterCategory}
+              filteredData={filteredData}
+              editId={editId}
+              editLieu={editLieu}
+              setEditLieu={setEditLieu}
+              handleUpdate={handleUpdate}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
           </CardContent>
         </Card>
       </TabsContent>
     </Tabs>
+    </>
   );
 }
