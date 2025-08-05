@@ -1,0 +1,5 @@
+// Add this to your HTML <head> (usually in _document.tsx or layout.tsx)
+// <link rel="manifest" href="/manifest.json" />
+// <meta name="theme-color" content="#85ffa9" />
+// <link rel="icon" href="/TNBLogo.png" />
+// <link rel="apple-touch-icon" href="/icon512_rounded.png" />
