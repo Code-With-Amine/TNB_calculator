@@ -112,6 +112,7 @@ export function EquipmentTaxCalculator() {
       return;
     }
 
+
     const count = selected.length;
     const evaluationLabels = selected.map((id) =>
       lang === "fr"
@@ -119,19 +120,21 @@ export function EquipmentTaxCalculator() {
         : criteriaList.find((c) => c.id === id)?.ar || id
     );
 
-    const zoneFr =
-      count >= 7
-        ? "Zone bien équipée (15 - 30 DH/m²)"
-        : count >= 2
-        ? "Zone moyennement équipée (5 - 15 DH/m²)"
-        : "Zone faiblement équipée (0.5 - 2 DH/m²)";
+    // Check for required criteria for "Zone moyennement équipée"
+    const hasRoads = selected.includes("roads");
+    const hasElectricity = selected.includes("electricity");
+    const hasWater = selected.includes("water");
 
-    const zoneAr =
-      count >= 7
-        ? "منطقة مجهزة جيدًا (15 - 30 درهم/م²)"
-        : count >= 2
-        ? "منطقة مجهزة بشكل متوسط (5 - 15 درهم/م²)"
-        : "منطقة غير مجهزة (0.5 - 2 درهم/م²)";
+    let zoneFr = "Zone faiblement équipée (0.5 - 2 DH/m²)";
+    let zoneAr = "منطقة غير مجهزة (0.5 - 2 درهم/م²)";
+
+    if (count >= 7) {
+      zoneFr = "Zone bien équipée (15 - 30 DH/m²)";
+      zoneAr = "منطقة مجهزة جيدًا (15 - 30 درهم/م²)";
+    } else if (count >= 2 && hasRoads && hasElectricity && hasWater) {
+      zoneFr = "Zone moyennement équipée (5 - 15 DH/m²)";
+      zoneAr = "منطقة مجهزة بشكل متوسط (5 - 15 درهم/م²)";
+    }
 
     const newResult: resultObject = {
       Lieu: lieu,
