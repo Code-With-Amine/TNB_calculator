@@ -36,6 +36,10 @@ function Nav() {
               <MenubarTrigger>Taxe sur les terrains non bâtis</MenubarTrigger>
               <MenubarContent>
                 <MenubarItem>
+                  <Link href="/newTNB">TNB Nouvelle Tarif</Link>
+                </MenubarItem>
+              <MenubarSeparator />
+                <MenubarItem>
                   <Link href="/terrainExo">Terrains Exo</Link>
                 </MenubarItem>
                 <MenubarSeparator />

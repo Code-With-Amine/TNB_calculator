@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { DataModal } from "@/components/DataModal";
+import { useRouter } from "next/navigation";
 import {
   Alert,
   AlertTitle,
@@ -70,35 +70,13 @@ interface resultObject {
 }
 
 export function EquipmentTaxCalculator() {
-  const [modalOpen, setModalOpen] = useState(false);
+  const router = useRouter();
   const [showLieuAlert, setShowLieuAlert] = useState(false);
-  const [editLieu, setEditLieu] = useState<string>("");
-  const [editId, setEditId] = useState<string | null>(null);
-
-  const handleEdit = (item: resultObject) => {
-    setEditId(item.id!);
-    setEditLieu(item.Lieu);
-  };
-
-  const handleUpdate = async () => {
-    if (!editId || !editLieu.trim()) return;
-    try {
-      await updateDoc(doc(db, "results", editId), { Lieu: editLieu });
-      setEditId(null);
-      setEditLieu("");
-      await fetchData();
-    } catch (err) {
-      console.error("Erreur de mise à jour :", err);
-    }
-  };
   const [selected, setSelected] = useState<string[]>([]);
   const [lang, setLang] = useState<"fr" | "ar">("fr");
   const [result, setResult] = useState<resultObject | null>(null);
   const [lieu, setLieu] = useState<string>("");
   const [data, setData] = useState<resultObject[]>([]);
-  const [search, setSearch] = useState<string>("");
-  const [filterCategory, setFilterCategory] = useState<string>("");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const toggle = (id: string) => {
     setSelected((prev) =>
@@ -181,12 +159,6 @@ export function EquipmentTaxCalculator() {
     }
   };
 
-  const filteredData = data.filter(
-    (item) =>
-      item.Lieu.toLowerCase().includes(search.toLowerCase()) &&
-      (filterCategory === "" || item.ZoneFr.includes(filterCategory))
-  );
-
   return (
     <>
       {showLieuAlert && (
@@ -251,24 +223,9 @@ export function EquipmentTaxCalculator() {
               </div>
             )}
 
-            <Button variant="outline" className="w-full" onClick={() => setModalOpen(true)}>
+            <Button variant="outline" className="w-full" onClick={() => router.push("/data-modal") }>
               Afficher toutes les données
             </Button>
-            <DataModal
-              open={modalOpen}
-              onOpenChange={setModalOpen}
-              search={search}
-              setSearch={setSearch}
-              filterCategory={filterCategory}
-              setFilterCategory={setFilterCategory}
-              filteredData={filteredData}
-              editId={editId}
-              editLieu={editLieu}
-              setEditLieu={setEditLieu}
-              handleUpdate={handleUpdate}
-              handleEdit={handleEdit}
-              handleDelete={handleDelete}
-            />
           </CardContent>
         </Card>
       </TabsContent>
