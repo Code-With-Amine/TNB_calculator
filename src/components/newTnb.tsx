@@ -19,34 +19,14 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Tabs,
-  TabsList,
-  TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { db } from "@/lib/firebase";
 import {
   collection,
   addDoc,
   getDocs,
-  deleteDoc,
-  updateDoc,
-  doc,
+
 } from "firebase/firestore";
 
 const criteriaList = [
@@ -76,7 +56,7 @@ export function EquipmentTaxCalculator() {
   const [lang, setLang] = useState<"fr" | "ar">("fr");
   const [result, setResult] = useState<resultObject | null>(null);
   const [lieu, setLieu] = useState<string>("");
-  const [data, setData] = useState<resultObject[]>([]);
+  const [successAlert, setSuccessAlert] = useState(false);
 
   const toggle = (id: string) => {
     setSelected((prev) =>
@@ -89,7 +69,6 @@ export function EquipmentTaxCalculator() {
       setShowLieuAlert(true);
       return;
     }
-
 
     const count = selected.length;
     const evaluationLabels = selected.map((id) =>
@@ -109,7 +88,7 @@ export function EquipmentTaxCalculator() {
     if (count >= 7) {
       zoneFr = "Zone bien équipée (15 - 30 DH/m²)";
       zoneAr = "منطقة مجهزة جيدًا (15 - 30 درهم/م²)";
-    } else if (count >= 2 && hasRoads && hasElectricity && hasWater) {
+    } else if (hasRoads && hasElectricity && hasWater) {
       zoneFr = "Zone moyennement équipée (5 - 15 DH/m²)";
       zoneAr = "منطقة مجهزة بشكل متوسط (5 - 15 درهم/م²)";
     }
@@ -125,37 +104,10 @@ export function EquipmentTaxCalculator() {
 
     try {
       await addDoc(collection(db, "results"), newResult);
-      await fetchData();
+      setSuccessAlert(true);
+      setTimeout(() => setSuccessAlert(false), 3000);
     } catch (err) {
       console.error("Error saving to Firestore:", err);
-    }
-  };
-
-  const fetchData = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "results"));
-      const docs = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as resultObject[];
-      setData(docs);
-    } catch (err) {
-      console.error("Error fetching from Firestore:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleDelete = async (id: string) => {
-    if (confirm("Confirmer la suppression ?")) {
-      try {
-        await deleteDoc(doc(db, "results", id));
-        await fetchData();
-      } catch (err) {
-        console.error("Erreur de suppression :", err);
-      }
     }
   };
 
@@ -172,6 +124,14 @@ export function EquipmentTaxCalculator() {
               OK
             </Button>
           </div>
+        </Alert>
+      )}
+      {successAlert && (
+        <Alert className="mb-4">
+          <AlertTitle>Succès</AlertTitle>
+          <AlertDescription>
+            Les données ont été ajoutées avec succès à la base de données !
+          </AlertDescription>
         </Alert>
       )}
       <Tabs
