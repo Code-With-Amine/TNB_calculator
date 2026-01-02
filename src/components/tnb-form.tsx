@@ -24,6 +24,7 @@ import { calculateAmountForYear } from "@/lib/tnb-utils" // utility function we'
 export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
   const [superficie, setSuperficie] = useState("")
   const [etage, setEtage] = useState<string | null>(null)
+  const [zone, setZone] = useState<string | null>(null)
   const [selectedTndYears, setSelectedTndYears] = useState<string[]>([])
   const [selectedDeclaredTnbYears, setSelectedDeclaredTnbYears] = useState<string[]>([])
   const [totalYears, setTotalYears] = useState<number>(0)
@@ -36,12 +37,12 @@ export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<
     setTotalYears(0)
     if (isNaN(superficieValue) || superficieValue <= 0) return
 
-    const tarif = etage == "villa" ? 6 : 10
-    const principal = superficieValue * tarif
-
     const computed = selectedTndYears.map((year) => {
+      const y = parseInt(year)
       const isDeclared = selectedDeclaredTnbYears.includes(year)
-      const total = calculateAmountForYear(parseInt(year), principal ,isDeclared)
+      const tarif = (y >= 2026 && zone === "A") ? (etage == "villa" ? 15 : 20) : (etage == "villa" ? 6 : 10)
+      const principal = superficieValue * tarif
+      const total = calculateAmountForYear(y, principal, isDeclared)
       return { year, total }
     })
     const total = computed.reduce((sum, item) => sum + item.total, 0)
@@ -68,6 +69,22 @@ export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<
                   placeholder="ex: 92"
                   required
                 />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="zone">Zone</Label>
+                <Select onValueChange={setZone}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Choisissez une zone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Zone</SelectLabel>
+                      <SelectItem value="A">Zone A</SelectItem>
+                      <SelectItem value="other">Autre</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="grid gap-2">

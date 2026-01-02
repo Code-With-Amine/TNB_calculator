@@ -24,6 +24,7 @@ import { calculateAmountForYear } from "@/lib/tnb-utils" // utility function we'
 export function TerranExo({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
   const [superficie, setSuperficie] = useState("")
   const [etage, setEtage] = useState<string | null>(null)
+  const [zone, setZone] = useState<string | null>(null)
   const [selectedTndYears, setSelectedTndYears] = useState<string[]>([])
   const [totalYears, setTotalYears] = useState<number>(0)
   const [results, setResults] = useState<{ year: string; total: number }[]>([])
@@ -34,11 +35,11 @@ export function TerranExo({ className, ...props }: React.ComponentPropsWithoutRe
     setTotalYears(0)
     if (isNaN(superficieValue) || superficieValue <= 0) return
 
-    const tarif = etage == "villa" ? 6 : 10
-    const principal = superficieValue * tarif
-
     const computed = selectedTndYears.map((year) => {
-      const total = Math.max(principal * 0.15, 500);
+      const y = parseInt(year)
+      const tarif = (y >= 2026 && zone === "A") ? (etage == "villa" ? 15 : 20) : (etage == "villa" ? 6 : 10)
+      const principal = superficieValue * tarif
+      const total = Math.max(principal * 0.15, 500)
       return { year, total }
     })
     const total = computed.reduce((sum, item) => sum + item.total, 0)
@@ -65,6 +66,22 @@ export function TerranExo({ className, ...props }: React.ComponentPropsWithoutRe
                   placeholder="ex: 92"
                   required
                 />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="zone">Zone</Label>
+                <Select onValueChange={setZone}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Choisissez une zone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Zone</SelectLabel>
+                      <SelectItem value="A">Zone A</SelectItem>
+                      <SelectItem value="other">Autre</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="grid gap-2">
