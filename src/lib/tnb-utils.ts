@@ -7,6 +7,11 @@ export function calculateAmountForYear(
   const today = new Date()
   const currentMonth = today.getMonth() + 1
   const currentYear = today.getFullYear()
+  // If calculating for the current year and we're in January or February,
+  // only the principal applies (no majorations or default charge).
+  if (year === currentYear && (currentMonth === 1 || currentMonth === 2)) {
+    return principal
+  }
 
   const def = isDeclared ? 0 : Math.max(principal * 0.15, 500)
   const maj10 = principal * 0.1
