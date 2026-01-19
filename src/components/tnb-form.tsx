@@ -19,7 +19,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { calculateAmountForYear } from "@/lib/tnb-utils" // utility function we'll define below
+import { calculateAmountForYear, breakdownForYear } from "@/lib/tnb-utils" // utility functions
+import { jsPDF } from "jspdf"
+import autoTable from "jspdf-autotable"
 
 export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
   const [superficie, setSuperficie] = useState("")
@@ -28,7 +30,14 @@ export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<
   const [selectedTndYears, setSelectedTndYears] = useState<string[]>([])
   const [selectedDeclaredTnbYears, setSelectedDeclaredTnbYears] = useState<string[]>([])
   const [totalYears, setTotalYears] = useState<number>(0)
-  const [results, setResults] = useState<{ year: string; total: number }[]>([])
+  const [results, setResults] = useState<Array<{
+    year: string
+    total: number
+    principal: number
+    tarif: number
+    breakdown: any
+    isDeclared: boolean
+  }>>([])
 
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -42,12 +51,74 @@ export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<
       const isDeclared = selectedDeclaredTnbYears.includes(year)
       const tarif = (y >= 2026 && zone === "A") ? (etage == "villa" ? 15 : 20) : (etage == "villa" ? 6 : 10)
       const principal = superficieValue * tarif
-      const total = calculateAmountForYear(y, principal, isDeclared)
-      return { year, total }
+      const breakdown = breakdownForYear(y, principal, isDeclared)
+      return { year, total: breakdown.total, principal, tarif, breakdown, isDeclared }
     })
     const total = computed.reduce((sum, item) => sum + item.total, 0)
     setTotalYears(total)
     setResults(computed)
+  }
+
+  const generatePdf = () => {
+    if (results.length === 0) return
+
+    const doc = new jsPDF({ unit: "pt", format: "a4" })
+    const title = "TNB - Détails du calcul et des majorations"
+    doc.setFontSize(16)
+    doc.text(title, 40, 50)
+
+    // Summary
+    doc.setFontSize(11)
+    doc.text(`Superficie: ${superficie} m²`, 40, 80)
+    doc.text(`Zone: ${zone || "-"}`, 220, 80)
+    doc.text(`Type: ${etage || "-"}`, 380, 80)
+
+    // Table data
+    const tableBody = results.map((r) => {
+      const br = r.breakdown
+      return [
+        r.year,
+        r.tarif?.toString() || "-",
+        r.principal.toFixed(2),
+        (br.def || 0).toFixed(2),
+        (br.maj10 || 0).toFixed(2),
+        (br.maj5 || 0).toFixed(2),
+        (br.maj0_5 || 0).toFixed(2),
+        (br.monthsLate || 0).toString(),
+        (br.total || 0).toFixed(2),
+      ]
+    })
+
+    autoTable(doc, {
+      startY: 100,
+      head: [["Année", "Tarif/m²", "Principal", "Défaut", "Maj 10%", "Maj 5%", "Maj 0.5%/mois", "Mois retard", "Total"]],
+      body: tableBody,
+      styles: { fontSize: 10 },
+    })
+
+    const finalY = (doc as any).lastAutoTable?.finalY || 100
+    doc.setFontSize(12)
+    doc.text("Explication des majorations:", 40, finalY + 30)
+    doc.setFontSize(10)
+    const explanation = [
+      "- Défaut (pénalité) : si non déclaré, 15% du principal ou minimum 500 DH.",
+      "- Majoration 10% : pénalité fixe de 10% du principal.",
+      "- Majoration 5% : pénalité supplémentaire de 5% du principal.",
+      "- Majoration 0.5% par mois : intérêts de retard de 0.5% du principal par mois de retard.",
+      "- Mois de retard : calculés depuis mars de l'année impayée jusqu'au mois courant.",
+    ]
+
+    let y = finalY + 50
+    explanation.forEach((line) => {
+      doc.text(line, 40, y)
+      y += 16
+    })
+
+    doc.setFontSize(12)
+    doc.text(`Total à payer: ${totalYears.toFixed(2)} DH`, 40, y + 10)
+
+    const fileName = `TNB_calcul_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.pdf`
+    doc.save(fileName)
   }
 
   return (
@@ -140,9 +211,21 @@ export function TnbForm({ className, ...props }: React.ComponentPropsWithoutRef<
                       </li>
                     ))}
                   </ul>
+
+                  <div className="mt-3 flex gap-3">
+                    <Button variant="secondary" onClick={generatePdf} className="flex-1">
+                      Télécharger le reçu (PDF)
+                    </Button>
+                  </div>
                 </div>
               )}
-            {totalYears > 0 &&  <p className="space-y-1 text-sm"><strong>Total: </strong>{totalYears.toFixed(2)}</p>}
+
+              {totalYears > 0 && (
+                <p className="space-y-1 text-sm">
+                  <strong>Total: </strong>
+                  {totalYears.toFixed(2)} DH
+                </p>
+              )}
 
             </div>
           </form>
