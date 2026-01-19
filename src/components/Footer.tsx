@@ -11,9 +11,9 @@ export default function FooterNav() {
   return (
 <footer
   className="
-    fixed bottom-3
-    left-1/2 -translate-x-1/2
-    w-[90%] max-w-[380px]
+    my-4
+    mx-auto
+    w-[90%] max-w-[880px]
     bg-white
     border border-slate-200
     rounded-2xl
