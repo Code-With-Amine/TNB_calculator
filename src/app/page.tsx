@@ -3,12 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  Landmark,
+  MapPinned ,
   Ban,
   Car,
   ParkingSquare,
   Trees,
-  MapPinned,
+  LandPlot,
   FileText,
   Calculator,
   LifeBuoy,
@@ -20,10 +20,10 @@ import FooterNav from "@/components/Footer";
 const navigationItems = [
   {
     id: 10,
-    title: "Terrains non bâtis nouvelle version",
-    subtitle: "Soumis à la taxe",
-    description: "Essayez le nouveau calcul des taxes de TNB",
-    icon: Landmark,
+    title: "Voir votre Terran position",
+    subtitle: "foncière en Z1 ou Z2",
+    description: "Voir votre Terran position dans la nouvelle tarification TNB",
+    icon: MapPinned ,
     color: "from-gray-500/20 to-gray-600/20",
     hoverColor: "hover:from-gray-500/30 hover:to-gray-600/30",
     borderColor: "border-gray-200/50",
@@ -34,7 +34,7 @@ const navigationItems = [
     title: "Terrains non bâtis (Non exonérés)",
     subtitle: "Soumis à la taxe",
     description: "Visualisez les terrains non exonérés",
-    icon: Landmark,
+    icon: LandPlot,
     color: "from-red-500/20 to-red-600/20",
     hoverColor: "hover:from-red-500/30 hover:to-red-600/30",
     borderColor: "border-red-200/50",
@@ -106,7 +106,7 @@ const navigationItems = [
     borderColor: "border-sky-200/50",
     link: "/error",
   },
-  {
+  /*{
     id: 7,
     title: "Calcul de la taxe urbaine",
     subtitle: "Simulateur intelligent",
@@ -127,7 +127,7 @@ const navigationItems = [
     hoverColor: "hover:from-gray-500/30 hover:to-gray-600/30",
     borderColor: "border-gray-200/50",
     link: "/error",
-  },
+  },*/
 ];
 
 export default function VerticalNavLanding() {

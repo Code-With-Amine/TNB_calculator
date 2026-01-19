@@ -23,7 +23,7 @@ function Nav() {
         <div className="flex items-center gap-3">
           <Link href="/">
             <Avatar className="cursor-pointer">
-              <AvatarImage src="/logoDark.png" />
+              <AvatarImage src="/logo.png" />
               <AvatarFallback>Daribty Logo</AvatarFallback>
             </Avatar>
           </Link>
