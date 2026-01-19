@@ -14,9 +14,11 @@ import {
   LifeBuoy,
   ChevronRight,
 } from "lucide-react";
+import Nav from "@/components/Nav";
+import FooterNav from "@/components/Footer";
 
 const navigationItems = [
-    {
+  {
     id: 10,
     title: "Terrains non bâtis nouvelle version",
     subtitle: "Soumis à la taxe",
@@ -130,20 +132,23 @@ const navigationItems = [
 
 export default function VerticalNavLanding() {
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
-  const headerTitle = "Bienvenue à La Regie 🏦";
-  const intoText =
-    "Vous trouverez ici les taxes perçues par la Régie et vous pourrez calculer votre taxe 🧾.";
+  const headerTitle =
+    "Bonjour, \nVous trouverez ici les taxes perçues par la Régie et vous pourrez calculer votre taxe 🧾.";
+  const intoText = "Choisissez la taxe que vous souhaitez payer";
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
+        <Nav />
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold text-slate-800 mb-4">
             {headerTitle}
           </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">{intoText}</p>
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto my-22">
+            {intoText}
+          </p>
         </div>
 
-        <nav className="space-y-4">
+        <nav className="flex flex-wrap gap-4 md:gap-6">
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const isHovered = hoveredItem === item.id;
@@ -151,19 +156,26 @@ export default function VerticalNavLanding() {
             return (
               <div
                 key={item.id}
-                className={`
-                  group relative w-full p-6 md:p-8 rounded-2xl border-2 
-                  bg-gradient-to-r ${item.color} ${item.hoverColor} ${
-                  item.borderColor
-                }
+              className={`
+                  group relative
+                  w-[calc(50%-0.5rem)]
+                  lg:w-[calc(50%-0.75rem)]
+                  p-6 md:p-8
+                  rounded-2xl border-2
+                  bg-[#C7C7C9]/[0.38]
+                  border-slate-200
                   backdrop-blur-sm cursor-pointer
-                  transform transition-all duration-500 ease-out
-                  hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/10
+                  transition-all duration-500 ease-out
+                  transform
+                  hover:scale-[1.02]
                   hover:-translate-y-1
-                  ${
-                    isHovered
-                      ? "shadow-2xl shadow-black/10 scale-[1.02] -translate-y-1"
-                      : "shadow-lg shadow-black/5"
+                  hover:shadow-2xl hover:shadow-black/10
+                  hover:bg-gradient-to-r
+                  hover:from-[#262EE3]
+                  hover:to-[#150AA3]
+                  ${isHovered
+                    ? "scale-[1.02] -translate-y-1 shadow-2xl shadow-black/10"
+                    : "shadow-lg shadow-black/5"
                   }
                 `}
                 onMouseEnter={() => setHoveredItem(item.id)}
@@ -190,20 +202,19 @@ export default function VerticalNavLanding() {
 
                       {/* Text Content */}
                       <div className="flex-1">
-                        <h3 className="text-2xl md:text-3xl font-bold text-slate-800 mb-2 transition-colors duration-300">
+                        <h3 className="text-2xl md:text-3xl font-bold text-slate-800 mb-2 transition-colors duration-300 group-hover:text-white">
                           {item.title}
                         </h3>
-                        <p className="text-slate-600 font-medium mb-1 transition-colors duration-300">
+                        <p className="text-slate-600 font-medium mb-1 transition-colors duration-300 group-hover:text-white/90">
                           {item.subtitle}
                         </p>
                         <p
                           className={`
-                        text-slate-500 transition-all duration-500 transform
-                        ${
-                          isHovered
-                            ? "opacity-100 translate-x-2"
-                            : "opacity-70 translate-x-0"
-                        }
+                        text-slate-500 transition-all duration-500 transform group-hover:text-white/80
+                        ${isHovered
+                              ? "opacity-100 translate-x-2"
+                              : "opacity-70 translate-x-0"
+                            }
                       `}
                         >
                           {item.description}
@@ -215,14 +226,13 @@ export default function VerticalNavLanding() {
                     <div
                       className={`
                     transform transition-all duration-300
-                    ${
-                      isHovered
-                        ? "translate-x-2 scale-110"
-                        : "translate-x-0 scale-100"
-                    }
+                    ${isHovered
+                          ? "translate-x-2 scale-110"
+                          : "translate-x-0 scale-100"
+                        }
                   `}
                     >
-                      <ChevronRight className="w-8 h-8 text-slate-400 group-hover:text-slate-600" />
+                      <ChevronRight className="w-8 h-8 text-slate-400 group-hover:text-slate-600 group-hover:text-white" />
                     </div>
                   </div>
 
@@ -232,22 +242,19 @@ export default function VerticalNavLanding() {
                   absolute bottom-0 left-6 right-6 h-1 rounded-full
                   bg-gradient-to-r ${item.color.replace("/20", "/60")}
                   transform transition-all duration-500 origin-left
-                  ${
-                    isHovered
-                      ? "scale-x-100 opacity-100"
-                      : "scale-x-0 opacity-0"
-                  }
+                  ${isHovered
+                        ? "scale-x-100 opacity-100"
+                        : "scale-x-0 opacity-0"
+                      }
                 `}
                   />
                 </Link>
               </div>
             );
           })}
+          <FooterNav />
         </nav>
-
-        {/* Footer */}
-        <div className="text-center mt-16 text-slate-500">
-        </div>
+        <div className="text-center mt-16 text-slate-500"></div>
       </div>
     </div>
   );
